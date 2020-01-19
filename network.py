@@ -21,28 +21,30 @@ class Network:
             self.length += 1
             self.__units[self.length] = agents.Agent(self.length, state)
         del i
-        print("%d number of %s-agents added to network." % (n, state))
+        #For testing
+        #print("%d number of %s-agents added to network." % (n, state))
 
     def count_beliefs(self) -> dict():
         """Returns a dictionary of agent type counts."""
         x = y = u = 0
         for agent in self.__units.values():
-            state = agent.state
+            state = agent.get_state()
             if state == 'x':
-                x += 1
+                x = x + 1
             elif state == 'y':
-                y += 1
-            elif state == 'u':
-                u += 1
+                y = y + 1
             else:
-                raise ValueError('Unsupported agent found in network.')
-        return {'nx' : x, 'ny' : y, 'nu' : u}
+                u = u + 1
+        counts = {'nx' : x, 'ny' : y, 'nu' : u}
+        del x, y, u
+        return counts
 
     def clear_agents(self) -> None:
         """Clears network."""
         self.__units.clear()
         self.length = 0
-        print("All units removed from the network.")
+        #For testing
+        #print("All units removed from the network.")
 
     def print_all(self) -> None:
         """Prints a list of all the IDs and Agents."""
@@ -50,20 +52,20 @@ class Network:
         for agent in self.__units.values():
             print(agent)
 
-    def aprox_maj(self, id_init : int, id_recip : int) -> agents.Agent:
+    def aprox_maj(self) -> agents.Agent:
         """The approximate majority algorithm for an exchange between two agents."""
-        init : agents.Agent = self.__units.get(id_init)
-        recip : agents.Agent = self.__units.get(id_recip)
+        init = self.__units.get(random.choice(list(self.__units)))
+        recip = self.__units.get(random.choice(list(self.__units)))
 
         if init is None or recip is None:
             warnings.warn('ID[s] provided were not found in network.')
             return None
 
-        if (init is recip or
-        init.get_state() is recip.get_state() or
-        init.get_state() is 'u'):
+        if (init == recip or
+        init.get_state() == recip.get_state() or
+        init.get_state() == 'u'):
             pass
-        elif (recip.get_state() is 'u'):
+        elif (recip.get_state() == 'u'):
             recip.set_state(init.get_state())
         else:
             recip.set_state('u')
