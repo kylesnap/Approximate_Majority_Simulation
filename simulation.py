@@ -62,6 +62,12 @@ def run_to_cycle(net : network.Network,  cycles : int) -> None:
         log.add_row(i, net.count_beliefs())
     log.inc_trial()
 
-def run_to_fixation(network : network.Network) -> None:
-    pass
-
+def run_to_fixation(net : network.Network) -> None:
+    """Runs the simulation until there are no more undecided agents."""
+    log.add_row(0, net.count_beliefs()) #Print starting row
+    i = 0
+    while net.count_beliefs().get('nu') != 0:
+        i += 1
+        net.aprox_maj()
+        log.add_row(i, net.count_beliefs())
+    log.inc_trial()
