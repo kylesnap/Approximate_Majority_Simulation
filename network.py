@@ -1,5 +1,6 @@
 import agents
 import random
+from scipy.stats import truncnorm
 import warnings
 from typing import Dict, Type
 
@@ -9,21 +10,19 @@ class Network:
 
     def __init__(self) -> None:
         """Constructs empty dictionary representing network."""
-        self.__units = {}
         self.length = 0
-        self.rep_cycle = 0
+        self.rep_cycles = 0
         self.counts = {}
-        self.new_counts = {}
+        self.__units = {}
 
-    def add_agents(self, n : int, state : str) -> None:
-        """Adds 'n' number of 'state' agents."""
+    def add_agents(self, n : int, state : str, gen) -> None:
+        """Adds 'n' number of 'state' agents with a random p given the generator."""
         if state not in ACCEPTED_STATES:
             warnings.warn("Agents of this state are not supported. No agents were added.")
             return
         for i in range(self.length, self.length + n):
             self.length += 1
-            self.__units[self.length] = agents.Agent(self.length, state)
-        del i
+            self.__units[self.length] = agents.Agent(self.length, state, gen.make_p())
         #For testing
         #print("%d number of %s-agents added to network." % (n, state))
 
@@ -38,8 +37,7 @@ class Network:
                 y = y + 1
             else:
                 u = u + 1
-        self.new_counts = {'nx' : x, 'ny' : y, 'nu' : u}
-        return self.new_counts
+        return {'nx' : x, 'ny' : y, 'nu' : u}
 
     def clear_agents(self) -> None:
         """Clears network."""
@@ -63,32 +61,47 @@ class Network:
             warnings.warn('ID[s] provided were not found in network.')
             return None
 
+        self.rep_cycles += 1
+
+        #Check strength of prior to see whether learning will be successful
+        if recip.get_p() <= random.random():
+            return None
+
         if (init == recip or
         init.get_state() == recip.get_state() or
         init.get_state() == 'u'):
             pass
         elif (recip.get_state() == 'u'):
             recip.set_state(init.get_state())
+            self.rep_cycles = 0
         else:
             recip.set_state('u')
+            self.rep_cycles = 0
 
         return recip
 
     def is_fixation(self) -> bool:
         """Checks whether simulation has reached fixation."""
         is_fixed = False
+        new_counts = self.count_beliefs()
         #Def #1 of fixation: Only one kind of decided unit in network
-        if (self.new_counts.get('nu') == 0) & ((self.new_counts.get('nx') != 0) ^ (self.new_counts('ny') != 0)):
-            is_fixed == True
-        
-        #Def #2: 100 cycles have passed with no fixation occuring.
-        if self.counts == self.new_counts:
-            self.rep_cycle += 1 #If same, increment number of repeated cycles
-        else:
-            self.rep_cycle = 0 #Else, update counts and reset rep. cycle counter.
-            self.counts = self.new_counts
-        
-        if self.rep_cycle >= 100:
-            is_fixed == True
+        if (new_counts.get('nu') == 0) & ((new_counts.get('nx') != 0) ^ (new_counts.get('ny') != 0)):
+            is_fixed = True
 
+        #Def #2: 100 cycles have passed without any changes.
+        if self.rep_cycles > 100:
+            is_fixed = True
+        
         return is_fixed
+
+class P_Generator:
+
+    def __init__(self, mean : float, sd : float) -> None:
+        low = 0
+        upp = 1
+        self._gen = truncnorm(
+        (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
+
+    def make_p(self):
+        """Creates a new rand float based on the distribution generated."""
+        return self._gen.rvs()

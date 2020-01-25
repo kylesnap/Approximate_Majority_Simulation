@@ -7,19 +7,20 @@ log = file_out.SimulationLog()
 
 class Simulation:
 
-    def __init__(self, params : {}, cycle : int, mode : str) -> None:
+    def __init__(self, params : {}) -> None:
         self.mode = params.get('mode') 
         self.sx = params.get('sx')
         self.sy = params.get('sy')
         self.su = params.get('su')
         self.cycles = params.get('cycles')
         self._network = network.Network()
+        self.gen = network.P_Generator(params.get('mean'), params.get('sd'))
 
     def run(self) -> float:
         time_str = perf_counter()
-        self._network.add_agents(self.sx, 'x')
-        self._network.add_agents(self.sy, 'y')
-        self._network.add_agents(self.su, 'u')
+        self._network.add_agents(self.sx, 'x', self.gen)
+        self._network.add_agents(self.sy, 'y', self.gen)
+        self._network.add_agents(self.su, 'u', self.gen)
         if (self.mode == "fixation"):
             run_to_fixation(self._network)
         else:
@@ -46,7 +47,7 @@ class Master_Simulation():
     def run(self) -> None:
         """Runs a single trial of the simulation for established trials."""
         for i in range(1, self.trials + 1):
-            sim_cycle = Simulation(self.params, i, self.mode)
+            sim_cycle = Simulation(self.params)
             print('Running Trial #%3d' % i)
             elapsed = sim_cycle.run()
             print("Done. Time Elapsed: %3f" % elapsed)
@@ -66,7 +67,7 @@ def run_to_fixation(net : network.Network) -> None:
     """Runs the simulation until there are no more undecided agents."""
     log.add_row(0, net.count_beliefs()) #Print starting row
     i = 0
-    while net.is_fixation is False:
+    while net.is_fixation() is False:
         i += 1
         net.aprox_maj()
         log.add_row(i, net.count_beliefs())

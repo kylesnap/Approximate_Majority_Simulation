@@ -20,6 +20,6 @@ class SimulationLog:
     def save_file(self) -> None:
         """Save log file with current date and time."""
         today = datetime.now()
-        file_name = str("./Data/SIMULATION_%s.csv" % today.strftime("%d_%m_%Y_%H%M"))
+        file_name = str("./Data/SIMULATION_%s.csv" % today.strftime("%d_%m_%Y_%H%M%S"))
         self._file.index.name = 'TRIAL'
         self._file.to_csv(file_name)

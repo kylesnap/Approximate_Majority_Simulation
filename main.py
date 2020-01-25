@@ -23,7 +23,9 @@ def control() -> Dict:
     sy = int(input("Please enter the starting number of  'y' agents:"))
     su = int(input("Please enter the number of  'u' agents:"))
     trials = int(input("Please enter the number of  trials:"))
-    params = {'mode' : mode, 'sx' : sx, 'sy' : sy, 'su' : su, 'trials' : trials}
+    mean = float(input("Please enter the mean 'p' value [0, 1]:"))
+    sd = float(input("Please enter the std of the 'p' value:"))
+    params = {'mode' : mode, 'sx' : sx, 'sy' : sy, 'su' : su, 'trials' : trials, 'mean' : mean, 'sd' : sd}
     return params
 
 if __name__ == "__main__":
