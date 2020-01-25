@@ -9,8 +9,11 @@ class Network:
 
     def __init__(self) -> None:
         """Constructs empty dictionary representing network."""
-        self.__units : Dict() = dict()
-        self.length : int = 0
+        self.__units = {}
+        self.length = 0
+        self.rep_cycle = 0
+        self.counts = {}
+        self.new_counts = {}
 
     def add_agents(self, n : int, state : str) -> None:
         """Adds 'n' number of 'state' agents."""
@@ -35,9 +38,8 @@ class Network:
                 y = y + 1
             else:
                 u = u + 1
-        counts = {'nx' : x, 'ny' : y, 'nu' : u}
-        del x, y, u
-        return counts
+        self.new_counts = {'nx' : x, 'ny' : y, 'nu' : u}
+        return self.new_counts
 
     def clear_agents(self) -> None:
         """Clears network."""
@@ -71,3 +73,22 @@ class Network:
             recip.set_state('u')
 
         return recip
+
+    def is_fixation(self) -> bool:
+        """Checks whether simulation has reached fixation."""
+        is_fixed = False
+        #Def #1 of fixation: Only one kind of decided unit in network
+        if (self.new_counts.get('nu') == 0) & ((self.new_counts.get('nx') != 0) ^ (self.new_counts('ny') != 0)):
+            is_fixed == True
+        
+        #Def #2: 100 cycles have passed with no fixation occuring.
+        if self.counts == self.new_counts:
+            self.rep_cycle += 1 #If same, increment number of repeated cycles
+        else:
+            self.rep_cycle = 0 #Else, update counts and reset rep. cycle counter.
+            self.counts = self.new_counts
+        
+        if self.rep_cycle >= 100:
+            is_fixed == True
+
+        return is_fixed

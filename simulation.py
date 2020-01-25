@@ -66,7 +66,7 @@ def run_to_fixation(net : network.Network) -> None:
     """Runs the simulation until there are no more undecided agents."""
     log.add_row(0, net.count_beliefs()) #Print starting row
     i = 0
-    while net.count_beliefs().get('nu') != 0:
+    while net.is_fixation is False:
         i += 1
         net.aprox_maj()
         log.add_row(i, net.count_beliefs())
