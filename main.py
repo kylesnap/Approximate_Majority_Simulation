@@ -1,5 +1,7 @@
-import simulation
 from typing import Dict
+
+import simulation
+
 
 def main() -> None:
     """Controls the simulation."""
@@ -16,6 +18,7 @@ def main() -> None:
     else:
         print("Simulation has been aborted.")
 
+
 def control() -> Dict:
     """Asks the user for simulation parameters."""
     mode = input("Please enter the simulation mode. [Either 'Fixation' or 'Cycles']")
@@ -25,8 +28,9 @@ def control() -> Dict:
     trials = int(input("Please enter the number of  trials:"))
     mean = float(input("Please enter the mean 'p' value [0, 1]:"))
     sd = float(input("Please enter the std of the 'p' value:"))
-    params = {'mode' : mode, 'sx' : sx, 'sy' : sy, 'su' : su, 'trials' : trials, 'mean' : mean, 'sd' : sd}
+    params = {'mode': mode, 'sx': sx, 'sy': sy, 'su': su, 'trials': trials, 'mean': mean, 'sd': sd}
     return params
+
 
 if __name__ == "__main__":
     main()

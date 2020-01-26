@@ -5,10 +5,11 @@ from time import perf_counter
 
 log = file_out.SimulationLog()
 
+
 class Simulation:
 
-    def __init__(self, params : {}) -> None:
-        self.mode = params.get('mode') 
+    def __init__(self, params: {}) -> None:
+        self.mode = params.get('mode')
         self.sx = params.get('sx')
         self.sy = params.get('sy')
         self.su = params.get('su')
@@ -29,9 +30,10 @@ class Simulation:
         self._network.clear_agents()
         return time_str - time_end
 
+
 class Master_Simulation():
 
-    def __init__(self, params : {}) -> None:
+    def __init__(self, params: {}) -> None:
         self.trials = params.get('trials')
         self.params = params.copy()
         self.mode = params.get('mode').upper()
@@ -43,7 +45,7 @@ class Master_Simulation():
     def __str__(self) -> None:
         """Prints the parameters of the simulations."""
         return pprint.pformat(self.params)
-    
+
     def run(self) -> None:
         """Runs a single trial of the simulation for established trials."""
         for i in range(1, self.trials + 1):
@@ -55,17 +57,19 @@ class Master_Simulation():
         print("All trials complete.")
         log.save_file()
 
-def run_to_cycle(net : network.Network,  cycles : int) -> None:
+
+def run_to_cycle(net: network.Network, cycles: int) -> None:
     """Runs the simulation for a set number of cycles."""
-    log.add_row(0, net.count_beliefs()) #Print starting row
+    log.add_row(0, net.count_beliefs())  # Print starting row
     for i in range(1, cycles + 1):
         net.aprox_maj()
         log.add_row(i, net.count_beliefs())
     log.inc_trial()
 
-def run_to_fixation(net : network.Network) -> None:
+
+def run_to_fixation(net: network.Network) -> None:
     """Runs the simulation until there are no more undecided agents."""
-    log.add_row(0, net.count_beliefs()) #Print starting row
+    log.add_row(0, net.count_beliefs())  # Print starting row
     i = 0
     while net.is_fixation() is False:
         i += 1
