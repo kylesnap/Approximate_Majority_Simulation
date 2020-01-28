@@ -6,7 +6,7 @@ from scipy.stats import truncnorm
 import agents
 
 ACCEPTED_STATES = ['x', 'y', 'u']
-
+warnings.simplefilter('once', UserWarning)
 
 class Network:
 
@@ -102,15 +102,17 @@ class P_Generator:
     def __init__(self, mean: float, sd: float) -> None:
         low = 0
         upp = 1
+        self._mean = mean
         try:
             self._gen = truncnorm(
                 (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
         except ZeroDivisionError:
-            print("Avoiding dividing by zero; setting sd to 0.0001.")
-            self._gen = truncnorm(
-                (low - mean) / 0.0001, (upp - mean) / 0.0001, loc=mean, scale=0.0001)
-
+            warnings.warn("SD is 0; setting all agent's 's' to the mean.")
+            self._gen = None
 
     def make_p(self):
         """Creates a new rand float based on the distribution generated."""
-        return self._gen.rvs()
+        if self._gen is None:
+            return self._mean
+        else:
+            return self._gen.rvs()
