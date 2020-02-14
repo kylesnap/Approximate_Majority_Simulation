@@ -1,2 +1,7 @@
 #Do not add anything to git inside the data file.
-Data/
+Data
+Plots
+
+#Ignore all hidden files except git ignore itself.
+.*
+!.gitignore
