@@ -107,3 +107,16 @@ class Network:
                 recip.state = 'xy'
 
         return recip
+
+    def ac(self, i: int = 0, r: int = 0) -> agents.Agent:
+        """Implements the always-copy algorithm."""
+        init, recip = self.choose_two(i, r)
+
+        if recip.state == 's' or recip.state == init.state:
+            pass
+        elif init.state == 's':  # S agents will espouse the y belief
+            recip.state = 'y'
+        else:
+            recip.state = init.state
+
+        return recip
