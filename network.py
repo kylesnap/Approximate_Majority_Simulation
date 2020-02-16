@@ -49,20 +49,27 @@ class Network:
         for agent in self.__units.values():
             print(agent)
 
-    def bam(self, i: int = -1, r: int = -1) -> agents.Agent:
-        """Implements the BAM algorithm."""
-        if i == -1 or r == -1:
+    def choose_two(self, i: int, r: int):
+        """Takes two IDs in the network, and returns their respective units. Chooses at random if unspecified."""
+        if i == 0:
             init = self.__units.get(random.choice(list(self.__units)))
-            recip = self.__units.get(random.choice(list(self.__units)))
         else:
             init = self.__units.get(i)
+        if r == 0:
+            recip = self.__units.get(random.choice(list(self.__units)))
+        else:
             recip = self.__units.get(r)
+        return init, recip
+
+    def bam(self, i: int = 0, r: int = 0) -> agents.Agent:
+        """Implements the binary agreement model algorithm."""
+        init, recip = self.choose_two(i, r)
         choice = random.choice(['x', 'y'])
 
         if recip.state == 's':
             pass  # Stubborn agents won't learn.
         elif recip.state == init.state:
-            if recip.state == 'xy':   # If both agents are compound, they'll come to both share a state at random.
+            if recip.state == 'xy':  # If both agents are compound, they'll come to both share a state at random.
                 recip.state = init.state = choice
         elif init.state == 's':
             if recip.state == 'xy':
@@ -82,7 +89,21 @@ class Network:
 
         return recip
 
+    def am(self, i: int = 0, r: int = 0) -> agents.Agent:
+        """Implements the approximate majority algorithm."""
+        init, recip = self.choose_two(i, r)
 
-def aprox_maj(self) -> agents.Agent:
-    """The approximate majority algorithm for an exchange between two agents."""
-    pass
+        if recip.state == 's' or recip.state == init.state or init.state == 'xy':
+            pass
+        elif init.state == 's':  # S agents will espouse the y belief
+            if recip.state == 'xy':
+                recip.state = 'y'
+            elif recip.state == 'x':
+                recip.state = 'xy'
+        else:  # Agents who receive a belief they do not share will be swapped either to xy or to the initiators state.
+            if recip.state == 'xy':
+                recip.state = init.state
+            else:
+                recip.state = 'xy'
+
+        return recip
