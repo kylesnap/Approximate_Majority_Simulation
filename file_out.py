@@ -10,9 +10,11 @@ class SimulationLog:
         self._trial = 1
 
     def inc_trial(self) -> None:
+        """Increases the 'trial' row by one."""
         self._trial = self._trial + 1
 
     def add_row(self, cycle: int, counts: {}) -> None:
+        """Adds a row to the dataframe."""
         to_add = pd.DataFrame({'CYCLE': cycle, 'N_X': counts.get('nx'),
                                'N_Y': counts.get('ny'), 'N_XY': counts.get('nxy'), 'N_S': counts.get('ns')},
                               index=[self._trial])

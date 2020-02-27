@@ -1,6 +1,5 @@
 import random
 import warnings
-from typing import Dict
 
 import agents
 
@@ -51,6 +50,9 @@ class Network:
         print("There are %d agents in this network.\n" % self.length)
         for agent in self.__units.values():
             print(agent)
+
+    ########DO NOT TOUCH ANYTHING BELOW THIS LINE PLEASE##########
+    ##############################################################
 
     def choose_two(self, i: int, r: int):
         """Takes two IDs in the network, and returns their respective units. Chooses at random if unspecified."""

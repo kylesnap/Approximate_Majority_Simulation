@@ -1,5 +1,3 @@
-from typing import List
-
 class Agent:
 
     def __init__(self, id: int, state: str) -> None:
@@ -12,7 +10,8 @@ class Agent:
 
     def __eq__(self, other) -> bool:
         """Returns true when the two agents are the same."""
-        if (self._ID == other._ID): return True
+        if (self._ID == other._ID):
+            return True
         return False
 
     @property
