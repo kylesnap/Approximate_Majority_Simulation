@@ -16,12 +16,8 @@ class SimulationLog:
 
     def add_row(self, cycle: int, counts: {}) -> None:
         """Adds a row to the dataframe."""
-        self._file = self._file.append(
-            pd.Series(data=(cycle, counts.get('nx'), counts.get('ny'),
-                      counts.get('nxy'), counts.get('ns')),
-            ),
-            ignore_index=True,
-        )
+        self._file[self._trial] = (cycle, counts.get('nx'), counts.get('ny'),
+                                   counts.get('nxy'), counts.get('ns'))
 
     def get_file(self) -> pd.DataFrame:
         return self._file
