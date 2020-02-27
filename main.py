@@ -18,12 +18,13 @@ def main() -> None:
 
 def control() -> Dict:
     """Asks the user for simulation parameters."""
-    mode = input("Please enter the simulation mode. [Either 'Fixation' or 'Cycles']")
     sx = int(input("Please enter the starting number of  'x' agents:"))
     sy = int(input("Please enter the starting number of  'y' agents:"))
-    su = int(input("Please enter the number of  'u' agents:"))
+    sxy = int(input("Please enter the number of  'xy' agents:"))
+    ss = int(input("Please enter the number of  's' agents:"))
     trials = int(input("Please enter the number of  trials:"))
-    params = {'mode' : mode, 'sx' : sx, 'sy' : sy, 'su' : su, 'trials' : trials}
+    cycles = int(input('How many cycles will this run for?'))
+    params = {'sx' : sx, 'sy' : sy, 'sxy' : sxy, 'ss' : ss, 'trials' : trials, 'cycles' : cycles}
     return params
 
 if __name__ == "__main__":
