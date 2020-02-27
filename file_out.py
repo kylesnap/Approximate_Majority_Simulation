@@ -33,11 +33,11 @@ class SimulationLog:
         self._file.index.name = 'TRIAL'
         # print(self._file.head(10))
         try:
-            output_dir = subprocess.check_call(["mkdir", "p", "Data"])
+            output_dir = subprocess.check_call(["mkdir", "-p", "Data"])
             f = open(file_name, "w")
             self._file.to_csv(f)
         except subprocess.CalledProcessError:
-            f = open("SIMULATION_ % s.csv"% today.strftime("%d_%m_%Y_%H%M"), "w")
+            f = open("SIMULATION_ % s.csv" % today.strftime("%d_%m_%Y_%H%M"), "w")
             self._file.to_csv(f)
 
         print('File Printed to %s' % file_name)
