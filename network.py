@@ -1,7 +1,8 @@
 import random
 import warnings
-
 import agents
+
+from collections import Counter
 
 ACCEPTED_STATES = ['x', 'y', 'xy', 's']
 
@@ -24,19 +25,10 @@ class Network:
 
     def count_beliefs(self) -> dict():
         """Returns a dictionary of agent type counts."""
-        x = y = xy = s = 0
+        counts = Counter()
         for agent in self.__units.values():
-            state = agent.state
-            if state == 'x':
-                x = x + 1
-            elif state == 'y':
-                y = y + 1
-            elif state == 's':
-                s = s + 1
-            else:
-                xy = xy + 1
-        counts = {'nx': x, 'ny': y, 'ns': s, 'nxy': xy}
-        return counts
+            counts[f"n{agent.state}"]+=1
+        return dict(counts)
 
     def clear_agents(self) -> None:
         """Clears network."""

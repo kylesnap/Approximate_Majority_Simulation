@@ -1,6 +1,7 @@
 from datetime import datetime
-
+import subprocess
 import pandas as pd
+import numpy as np
 
 
 class SimulationLog:
@@ -15,10 +16,12 @@ class SimulationLog:
 
     def add_row(self, cycle: int, counts: {}) -> None:
         """Adds a row to the dataframe."""
-        to_add = pd.DataFrame({'CYCLE': cycle, 'N_X': counts.get('nx'),
-                               'N_Y': counts.get('ny'), 'N_XY': counts.get('nxy'), 'N_S': counts.get('ns')},
-                              index=[self._trial])
-        self._file = self._file.append(to_add)
+        self._file = self._file.append(
+            pd.Series(data=(cycle, counts.get('nx'), counts.get('ny'),
+                      counts.get('nxy'), counts.get('ns')),
+            ),
+            ignore_index=True,
+        )
 
     def get_file(self) -> pd.DataFrame:
         return self._file
@@ -29,5 +32,12 @@ class SimulationLog:
         file_name = str("./Data/SIMULATION_%s.csv" % today.strftime("%d_%m_%Y_%H%M"))
         self._file.index.name = 'TRIAL'
         # print(self._file.head(10))
-        self._file.to_csv(file_name)
+        try:
+            output_dir = subprocess.check_call(["mkdir", "p", "Data"])
+            f = open(file_name, "w")
+            self._file.to_csv(f)
+        except subprocess.CalledProcessError:
+            f = open("SIMULATION_ % s.csv"% today.strftime("%d_%m_%Y_%H%M"), "w")
+            self._file.to_csv(f)
+
         print('File Printed to %s' % file_name)
