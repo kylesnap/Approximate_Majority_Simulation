@@ -18,9 +18,9 @@ def main() -> None:
 
 def control() -> Dict:
     """Asks the user for simulation parameters."""
-    alg = input("Enter either 'AM', 'BAM', or 'AC'")
+    alg = input("Enter either 'AM', 'BAM', or 'AC'").upper()
     if alg not in ['AM', 'BAM', 'AC']:
-        raise NameError('Algorithm not-supported. Please ensure your entry is case sensitive.')
+        raise NameError('Algorithm not-supported.')
     sx = int(input("Please enter the starting number of  'x' agents:"))
     sy = int(input("Please enter the starting number of  'y' agents:"))
     sxy = int(input("Please enter the number of  'xy' agents:"))
