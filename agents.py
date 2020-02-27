@@ -1,10 +1,8 @@
-from typing import List
-
 class Agent:
 
-    def __init__(self, id, state) -> None:
-        self._ID : int = id
-        self._state : str = state
+    def __init__(self, id: int, state: str) -> None:
+        self._ID = id
+        self._state = state
 
     def __str__(self) -> str:
         """Pretty print."""
@@ -12,11 +10,14 @@ class Agent:
 
     def __eq__(self, other) -> bool:
         """Returns true when the two agents are the same."""
-        if (self._ID == other._ID): return True
+        if (self._ID == other._ID):
+            return True
         return False
 
-    def get_state(self) -> str:
+    @property
+    def state(self):
         return self._state
 
-    def set_state(self, value: str) -> None:
-        self._state = value
+    @state.setter
+    def state(self, new_val: str):
+        self._state = new_val
