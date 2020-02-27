@@ -12,6 +12,7 @@ class Simulation:
         self.sy = params.get('sy')
         self.sxy = params.get('sxy')
         self.ss = params.get('ss')
+        self.alg = params.get('alg')
         self.cycles = params.get('cycles')
         self._network = network.Network()
 
@@ -21,7 +22,7 @@ class Simulation:
         self._network.add_agents(self.sy, 'y')
         self._network.add_agents(self.sxy, 'xy')
         self._network.add_agents(self.ss, 's')
-        run_to_cycle(self._network, self.cycles)
+        run_to_cycle(self._network, self.alg, self.cycles)
         time_end = perf_counter()
         self._network.clear_agents()
         return time_str - time_end
@@ -47,10 +48,15 @@ class Master_Simulation():
         print("All trials complete.")
         log.save_file()
 
-def run_to_cycle(net : network.Network,  cycles : int) -> None:
+def run_to_cycle(net: network.Network,  alg: str, cycles: int) -> None:
     """Runs the simulation for a set number of cycles."""
-    log.add_row(0, net.count_beliefs()) #Print starting row
+    log.add_row(0, net.count_beliefs()) # Print starting row
     for i in range(1, cycles + 1):
-        net.am()
+        if alg == 'AM':
+            net.am()
+        elif alg == 'BAM':
+            net.bam()
+        else:
+            net.ac()
         log.add_row(i, net.count_beliefs())
     log.inc_trial()
