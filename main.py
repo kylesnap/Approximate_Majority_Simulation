@@ -9,7 +9,7 @@ def main() -> None:
     print(sim)
     print()
     switch = int(input("Would you like to run this simulation now? [1: Yes, 2: No]"))
-    if (switch is 1):
+    if switch:
         print("Beginning Simulation!")
         print()
         sim.run()
@@ -27,7 +27,8 @@ def control() -> Dict:
     ss = int(input("Please enter the number of  's' agents:"))
     trials = int(input("Please enter the number of  trials:"))
     cycles = int(input('How many cycles will this run for?'))
-    params = {'alg': alg, 'sx': sx, 'sy': sy, 'sxy': sxy, 'ss': ss, 'trials': trials, 'cycles': cycles}
+    params = {'alg': alg, 'sx': sx, 'sy': sy, 'sxy': sxy, 'ss': ss,
+              'trials': trials, 'cycles': cycles}
     return params
 
 if __name__ == "__main__":
