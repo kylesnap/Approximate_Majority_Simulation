@@ -33,9 +33,9 @@ class SimulationLog:
         try:
             output_dir = subprocess.check_call(["mkdir", "-p", "Data"])
             f = open(file_name, "w")
-            df.to_csv(f, index=False)
+            df.to_csv(f, index=False, na_rep=0)
         except subprocess.CalledProcessError:
             f = open("SIMULATION_ % s.csv" % today.strftime("%d_%m_%Y_%H%M"), "w")
-            df.to_csv(f, index=False)
+            df.to_csv(f, index=False, na_rep=0)
 
         print('File Printed to %s' % file_name)
