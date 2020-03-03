@@ -28,7 +28,7 @@ class Simulation:
         run_to_cycle(self._network, self.alg, self.cycles)
         time_end = perf_counter()
         self._network.clear_agents()
-        return time_str - time_end
+        return time_end - time_str
 
 
 class Master_Simulation():

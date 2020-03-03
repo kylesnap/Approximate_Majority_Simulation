@@ -1,11 +1,16 @@
 import random
 import warnings
-import agents
-
 from collections import Counter
+
+import agents
 
 ACCEPTED_STATES = ['x', 'y', 'xy', 's']
 
+#####SEED OF RANDOM PLEASE REMOVE DURING GENUINE RUNS######
+random.seed(69)  # Nice
+
+
+#####
 
 class Network:
 
@@ -23,12 +28,9 @@ class Network:
             self.length += 1
             self.__units[self.length] = agents.Agent(self.length, state)
 
-    def count_beliefs(self) -> dict():
+    def count_beliefs(self) -> {}:
         """Returns a dictionary of agent type counts."""
-        counts = Counter()
-        for agent in self.__units.values():
-            counts[f"n{agent.state}"]+=1
-        return dict(counts)
+        return dict(Counter(agent.state for agent in self.__units.values()))
 
     def clear_agents(self) -> None:
         """Clears network."""
@@ -116,4 +118,4 @@ class Network:
         else:
             recip.state = init.state
 
-        return reci
+        return recip
