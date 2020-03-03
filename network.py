@@ -6,6 +6,7 @@ import agents
 
 ACCEPTED_STATES = ['x', 'y', 'xy', 's']
 
+
 class Network:
 
     def __init__(self) -> None:

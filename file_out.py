@@ -27,11 +27,11 @@ class SimulationLog:
     def save_file(self) -> None:
         """Save log file with current date and time."""
         today = datetime.now()
-        file_name = str("./Data/SIMULATION_%s.csv" % today.strftime("%d_%m_%Y_%H%M"))
+        file_name = str("./output/SIMULATION_%s.csv" % today.strftime("%d_%m_%Y_%H%M"))
         df = pd.DataFrame.from_dict(self._data, "index")
         # print(self._file.head(10))
         try:
-            output_dir = subprocess.check_call(["mkdir", "-p", "Data"])
+            output_dir = subprocess.check_call(["mkdir", "-p", "output"])
             f = open(file_name, "w")
             df.to_csv(f, index=False, na_rep=0)
         except subprocess.CalledProcessError:

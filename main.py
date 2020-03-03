@@ -40,5 +40,6 @@ def control() -> {}:
     return {'alg': args.model.upper, 'trials': args.trials, 'cycles': args.cycles,
             'sx': args.x, 'sy': args.y, 'sxy': args.xy, 'ss': args.s}
 
+
 if __name__ == "__main__":
     main()
