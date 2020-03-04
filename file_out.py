@@ -27,7 +27,7 @@ class SimulationLog:
     def save_file(self) -> None:
         """Save log file with current date and time."""
         today = datetime.now()
-        file_name = str("./output/SIMULATION_%s.csv" % today.strftime("%d_%m_%Y_%H%M"))
+        file_name = str("./output/SIMULATION_%s.csv" % today.strftime("%d_%m_%Y_%H%M%S"))
         df = pd.DataFrame.from_dict(self._data, "index")
         # print(self._file.head(10))
         try:
@@ -35,7 +35,7 @@ class SimulationLog:
             f = open(file_name, "w")
             df.to_csv(f, index=False, na_rep=0)
         except subprocess.CalledProcessError:
-            f = open("SIMULATION_ % s.csv" % today.strftime("%d_%m_%Y_%H%M"), "w")
+            f = open("SIMULATION_ % s.csv" % today.strftime("%d_%m_%Y_%H%M%S"), "w")
             df.to_csv(f, index=False, na_rep=0)
 
         print('File Printed to %s' % file_name)
