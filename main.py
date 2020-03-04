@@ -37,7 +37,7 @@ def control() -> {}:
     if args.seed:
         random.seed(69)
         warnings.warn("Random was seeded. Run without '-s' switch for genuine results.")
-    return {'alg': args.model.upper, 'trials': args.trials, 'cycles': args.cycles,
+    return {'model': args.model.upper(), 'trials': args.trials, 'cycles': args.cycles,
             'sx': args.x, 'sy': args.y, 'sxy': args.xy, 'ss': args.s}
 
 
