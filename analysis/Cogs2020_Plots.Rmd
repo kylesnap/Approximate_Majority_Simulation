@@ -1,0 +1,70 @@
+---
+title: "CGOS2020 Paper"
+output: html_notebook
+---
+
+```{r, setup, include=FALSE}
+library(tidyverse)
+library(reticulate)
+library(svglite)
+```
+
+We first import all of our data, then assemble it into one large sheet.
+
+```{python}
+import glob
+
+import pandas as pd
+
+df = pd.concat([pd.read_csv(f) for f in glob.glob('SIMULATION_*.csv')], ignore_index=True)
+```
+Now, we take the N_X, N_Y, BOT_P, and N_S rows. We will also remove all rows except the row from the last cycle, in order to observe the number of y-agents in the network at that time.
+```{r}
+max_cycle <- py$df %>%
+  filter(CYCLE == 10000 | CYCLE == 0) %>%
+  mutate(S_S = if_else(is.na(S_S), N_S, S_S)) %>%
+  group_by(BOT_P, S_S, TRIAL) %>%
+  mutate(PROP_Y = min(max(N_Y) / max(N_X), 1.00)) %>%
+  filter(CYCLE == 10000) %>%
+  select(S_S, BOT_P, TRIAL, PROP_Y) %>%
+  ungroup() %>%
+  mutate(BOT_P = as_factor(BOT_P))
+add_row(max_cycle, S_S = 40, BOT_P = 0.05, TRIAL = 1, PROP_Y = 0)
+add_row(max_cycle, S_S = 50, BOT_P = 0.05, TRIAL = 1, PROP_Y = 0)
+add_row(max_cycle, S_S = 60, BOT_P = 0.05, TRIAL = 1, PROP_Y = 0)
+add_row(max_cycle, S_S = 40, BOT_P = 0.1, TRIAL = 1, PROP_Y = 0)
+add_row(max_cycle, S_S = 50, BOT_P = 0.1, TRIAL = 1, PROP_Y = 0)
+add_row(max_cycle, S_S = 60, BOT_P = 0.1, TRIAL = 1, PROP_Y = 0)
+add_row(max_cycle, S_S = 70, BOT_P = 0.1, TRIAL = 1, PROP_Y = 0)
+add_row(max_cycle, S_S = 80, BOT_P = 0.1, TRIAL = 1, PROP_Y = 0)
+
+n = 20
+sum_cycle <- max_cycle %>%
+  group_by(S_S, BOT_P) %>%
+  summarise(MEAN = mean(PROP_Y), SD = sd(PROP_Y), LCI = MEAN - qt(0.975, df = n - 1) * SD / sqrt(n), UCI = MEAN + qt(0.975, df = n - 1) * SD / sqrt(n))
+```
+Now we plot the lines!
+```{r}
+propy.only.0 <- ggplot(subset(sum_cycle, BOT_P == 0), aes(x = S_S, y = MEAN, ymin = LCI, ymax = UCI))
+fig1 <- propy.only.0 +
+  geom_path() +
+  geom_pointrange() +
+  scale_x_continuous(name = 'Starting Number of s-agents in the Network', limits = c(40, 120)) +
+  scale_y_continuous('Mean Prop. of Y-Agents after 10,000 Cycles')
+ggsave(filename = 'fig1.svg', plot = fig1, path = '../Plots/', units = 'cm', width = 11, height = 9)
+
+propy.over.s <- ggplot(sum_cycle, aes(x = S_S, y = MEAN, ymin = LCI, ymax = UCI, group = BOT_P, colour = BOT_P))
+fig2 <- propy.over.s +
+  geom_path() +
+  geom_pointrange() +
+  scale_x_continuous(name = 'Starting Number of s-agents in the Network', limits = c(40, 150)) +
+  scale_y_continuous('Mean Prop. of Y-Agents after 10,000 Cycles') +
+  scale_color_discrete('p(copy)')
+ggsave(filename = 'fig2.svg', plot = fig2, path = '../Plots/', units = 'cm', width = 11, height = 9)
+```
+An additonal plot showing how numerous the bots must be in order for y-fixation.
+```{r}
+y_fix_data <- sum_cycle %>%
+  filter(S_S %in% c(seq(100, 140, 10))) %>%
+  mutate(PROP_S = S_S / 500)
+```

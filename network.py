@@ -6,11 +6,6 @@ import agents
 
 ACCEPTED_STATES = ['x', 'y', 'xy', 's']
 
-#####SEED OF RANDOM PLEASE REMOVE DURING GENUINE RUNS######
-random.seed(69)  # Nice
-
-
-#####
 
 class Network:
 

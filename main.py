@@ -1,5 +1,11 @@
+#!/usr/bin/env python3
+
+import argparse
+import random
+import warnings
+
 import simulation
-from typing import Dict
+
 
 def main() -> None:
     """Controls the simulation."""
@@ -7,29 +13,33 @@ def main() -> None:
     sim = simulation.Master_Simulation(params)
     print("The simulation will be run with the following parameters:")
     print(sim)
-    print()
-    switch = int(input("Would you like to run this simulation now? [1: Yes, 2: No]"))
-    if switch:
-        print("Beginning Simulation!")
-        print()
-        sim.run()
-    else:
-        print("Simulation has been aborted.")
+    sim.run()
 
-def control() -> Dict:
+
+def control() -> {}:
     """Asks the user for simulation parameters."""
-    alg = input("Enter either 'AM', 'BAM', or 'AC'").upper()
-    if alg not in ['AM', 'BAM', 'AC']:
-        raise NameError('Algorithm not-supported.')
-    sx = int(input("Please enter the starting number of  'x' agents:"))
-    sy = int(input("Please enter the starting number of  'y' agents:"))
-    sxy = int(input("Please enter the number of  'xy' agents:"))
-    ss = int(input("Please enter the number of  's' agents:"))
-    trials = int(input("Please enter the number of  trials:"))
-    cycles = int(input('How many cycles will this run for?'))
-    params = {'alg': alg, 'sx': sx, 'sy': sy, 'sxy': sxy, 'ss': ss,
-              'trials': trials, 'cycles': cycles}
-    return params
+
+    # First parses all arguments.
+    parser = argparse.ArgumentParser(description="Runs a simulation of the effect of stubborn agents on a network of "
+                                                 "social learners.")
+    parser.add_argument("model", help="interaction model used", choices=['am', 'bam', 'ac'])
+    parser.add_argument("trials", help="number of trials to perform", type=int)
+    parser.add_argument("cycles", help="number of cycles per trial", type=int)
+    parser.add_argument("x", help="starting number of 'x' agents", type=int)
+    parser.add_argument("y", help="starting number of 'y' agents", type=int)
+    parser.add_argument("xy", help="starting number of 'xy' agents", type=int)
+    parser.add_argument("s", help="starting number of 's' agents", type=int)
+    parser.add_argument("-s", "--seed", help="seeds random",
+                        action="store_true")
+    args = parser.parse_args()
+
+    # Then stores sim parameters in dict, and sets seed if req.
+    if args.seed:
+        random.seed(69)
+        warnings.warn("Random was seeded. Run without '-s' switch for genuine results.")
+    return {'model': args.model.upper(), 'trials': args.trials, 'cycles': args.cycles,
+            'sx': args.x, 'sy': args.y, 'sxy': args.xy, 'ss': args.s}
+
 
 if __name__ == "__main__":
     main()
