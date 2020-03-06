@@ -50,7 +50,7 @@ class Master_Simulation():
             print("Done. Time Elapsed: %3f" % elapsed)
             del sim_cycle
         print("All trials complete.")
-        log.save_file()
+        log.save_file(self.params.get('model'))
 
 
 def run_to_cycle(net: network.Network, alg: str, cycles: int) -> None:

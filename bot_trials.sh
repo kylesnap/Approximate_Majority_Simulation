@@ -72,7 +72,8 @@ if ! [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
 fi
 
 #If yes, run simulations. Seed if necessary.
-log_title=$(printf "./output/%s_%s_logfile.txt" "$MODEL" "$(date +'%d%m%Y_%H%M')")
+log_title=$(printf "./output/%s_logfile_%s.txt" "$MODEL" "$(date +'%d%m%Y')")
+mkdir "./output" && touch "$log_title"
 if [[ $SEED ]]; then
   for ((i = X; i <= Y; i += N)); do
     echo Running with s = $i. SEED ON.
