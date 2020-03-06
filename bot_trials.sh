@@ -76,12 +76,12 @@ log_title=$(printf "./output/%s_%s_logfile.txt" "$MODEL" "$(date +'%d%m%Y_%H%M')
 if [[ $SEED ]]; then
   for ((i = X; i <= Y; i += N)); do
     echo Running with s = $i. SEED ON.
-    ./main.py -s "$MODEL" 2 10 500 0 0 $i >> "$log_title"
+    ./main.py -s "$MODEL" 20 10000 500 0 0 $i >>"$log_title"
   done
 else
   for ((i = X; i <= Y; i += N)); do
     echo Running with s = $i. SEED OFF.
-    ./main.py "$MODEL" 2 10 500 0 0 $i >> "$log_title"
+    ./main.py "$MODEL" 20 10000 500 0 0 $i >>"$log_title"
   done
 fi
 
