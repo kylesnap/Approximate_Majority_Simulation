@@ -1,6 +1,7 @@
 ###Project customs
 output/
 /*.csv
+/*.feather
 
 ###Python defaults
 # Byte-compiled / optimized / DLL files
