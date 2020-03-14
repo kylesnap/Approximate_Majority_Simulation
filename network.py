@@ -14,14 +14,14 @@ class Network:
         self.__units = {}
         self.length = 0
 
-    def add_agents(self, n: int, state: str) -> None:
+    def add_agents(self, n: int, state: str, learn_p: float = 1) -> None:
         """Adds 'n' number of 'state' agents."""
         if state not in ACCEPTED_STATES:
             warnings.warn("Agents of this state are not supported. No agents were added.")
             return
         for i in range(self.length, self.length + n):
             self.length += 1
-            self.__units[self.length] = agents.Agent(self.length, state)
+            self.__units[self.length] = agents.Agent(self.length, state, learn_p)
 
     def count_beliefs(self) -> {}:
         """Returns a dictionary of agent type counts."""
@@ -59,10 +59,16 @@ class Network:
         """Implements the binary agreement model algorithm."""
         init, recip = self.choose_two(i, r)
         choice = random.choice(['x', 'y'])
+        vuln = False
 
         if recip.state == 's':
-            pass  # Stubborn agents won't learn.
-        elif recip.state == init.state:
+            if recip.learn_p < random.random():
+                recip.state = 'y'
+                vuln = True
+            else:
+                return recip  # Stubborn agents won't learn.
+
+        if recip.state == init.state:
             if recip.state == 'xy':  # If both agents are compound, they'll come to both share a state at random.
                 recip.state = init.state = choice
         elif init.state == 's':
@@ -81,13 +87,24 @@ class Network:
             else:
                 recip.state = 'xy'
 
+        if recip.state == 'y' and vuln == True:
+            recip.state = 's'
+
         return recip
 
     def am(self, i: int = 0, r: int = 0) -> agents.Agent:
         """Implements the approximate majority algorithm."""
         init, recip = self.choose_two(i, r)
+        vuln = False
 
-        if recip.state == 's' or recip.state == init.state or init.state == 'xy':
+        if recip.state == 's':
+            if recip.learn_p < random.random():
+                recip.state = 'y'
+                vuln = True
+            else:
+                return recip  # Stubborn agents won't learn.
+
+        if recip.state == init.state or init.state == 'xy':
             pass
         elif init.state == 's':  # S agents will espouse the y belief
             if recip.state == 'xy':
@@ -100,11 +117,22 @@ class Network:
             else:
                 recip.state = 'xy'
 
+        if recip.state == 'y' and vuln == True:
+            recip.state = 's'
+
         return recip
 
     def ac(self, i: int = 0, r: int = 0) -> agents.Agent:
         """Implements the always-copy algorithm."""
         init, recip = self.choose_two(i, r)
+        vuln = False
+
+        if recip.state == 's':
+            if recip.learn_p < random.random():
+                recip.state = 'y'
+                vuln = True
+            else:
+                return recip  # Stubborn agents won't learn.
 
         if recip.state == 's' or recip.state == init.state:
             pass
@@ -112,5 +140,8 @@ class Network:
             recip.state = 'y'
         else:
             recip.state = init.state
+
+        if recip.state == 'y' and vuln == True:
+            recip.state = 's'
 
         return recip
