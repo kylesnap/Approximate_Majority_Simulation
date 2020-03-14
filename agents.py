@@ -1,8 +1,9 @@
 class Agent:
 
-    def __init__(self, id: int, state: str) -> None:
+    def __init__(self, id: int, state: str, learn_p: float) -> None:
         self._ID = id
         self._state = state
+        self._learnp = learn_p
 
     def __str__(self) -> str:
         """Pretty print."""
@@ -21,3 +22,7 @@ class Agent:
     @state.setter
     def state(self, new_val: str):
         self._state = new_val
+
+    @property
+    def learnp(self):
+        return self._learnp
