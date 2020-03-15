@@ -3,7 +3,7 @@ class Agent:
     def __init__(self, id: int, state: str, learn_p: float) -> None:
         self._ID = id
         self._state = state
-        self._learnp = learn_p
+        self._learn_p = learn_p
 
     def __str__(self) -> str:
         """Pretty print."""
@@ -24,5 +24,5 @@ class Agent:
         self._state = new_val
 
     @property
-    def learnp(self):
-        return self._learnp
+    def learn_p(self):
+        return self._learn_p

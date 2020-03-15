@@ -9,14 +9,15 @@ log = file_out.SimulationLog()
 
 class Simulation:
 
-    def __init__(self, params: {}, cycle: int) -> None:
+    def __init__(self, params: {}) -> None:
         self.sx = params.get('sx')
         self.sy = params.get('sy')
         self.sxy = params.get('sxy')
         self.ss = params.get('ss')
+        self.bot_p = params.get('bot_p')
         self.model = params.get('model')
         self.cycles = params.get('cycles')
-        self._network = network.Network()
+        self._network = network.Network(self.bot_p)
 
     def run(self) -> float:
         """Prepares a network, then runs cycles number of interactions between agents."""
@@ -24,7 +25,7 @@ class Simulation:
         self._network.add_agents(self.sx, 'x')
         self._network.add_agents(self.sy, 'y')
         self._network.add_agents(self.sxy, 'xy')
-        self._network.add_agents(self.ss, 's')
+        self._network.add_agents(self.ss, 's', self.bot_p)
         run_to_cycle(self._network, self.model, self.cycles)
         time_end = perf_counter()
         self._network.clear_agents()
@@ -44,7 +45,7 @@ class Master_Simulation():
     def run(self) -> None:
         """Runs a single trial of the simulation for established trials."""
         for i in range(1, self.trials + 1):
-            sim_cycle = Simulation(self.params, i)
+            sim_cycle = Simulation(self.params)
             print('Running Trial #%3d' % i)
             elapsed = sim_cycle.run()
             print("Done. Time Elapsed: %3f" % elapsed)

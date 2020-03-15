@@ -9,10 +9,11 @@ ACCEPTED_STATES = ['x', 'y', 'xy', 's']
 
 class Network:
 
-    def __init__(self) -> None:
+    def __init__(self, bot_p: float) -> None:
         """Constructs empty dictionary representing network."""
         self.__units = {}
         self.length = 0
+        self.bot_p = bot_p
 
     def add_agents(self, n: int, state: str, learn_p: float = 1) -> None:
         """Adds 'n' number of 'state' agents."""
@@ -25,7 +26,7 @@ class Network:
 
     def count_beliefs(self) -> {}:
         """Returns a dictionary of agent type counts."""
-        return dict(Counter(agent.state for agent in self.__units.values()))
+        return dict(Counter(agent.state for agent in self.__units.values()), bot_p=self.bot_p)
 
     def clear_agents(self) -> None:
         """Clears network."""
@@ -62,7 +63,7 @@ class Network:
         vuln = False
 
         if recip.state == 's':
-            if recip.learn_p < random.random():
+            if recip.learn_p > random.random():
                 recip.state = 'y'
                 vuln = True
             else:
@@ -98,7 +99,7 @@ class Network:
         vuln = False
 
         if recip.state == 's':
-            if recip.learn_p < random.random():
+            if recip.learn_p > random.random():
                 recip.state = 'y'
                 vuln = True
             else:
@@ -128,7 +129,7 @@ class Network:
         vuln = False
 
         if recip.state == 's':
-            if recip.learn_p < random.random():
+            if recip.learn_p > random.random():
                 recip.state = 'y'
                 vuln = True
             else:
