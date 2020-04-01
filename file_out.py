@@ -10,15 +10,19 @@ class SimulationLog:
         self._data = {}
         self._trial = 1
         self._nrow = 0
+        self._s_start = None
 
     def inc_trial(self) -> None:
         """Increases the 'trial' col by one."""
         self._trial += 1
 
     def add_row(self, cycle: int, counts: {}) -> None:
-        """Adds a row to the dataframe."""
+        """Adds a row to the dataframe. Also gets starting (i.e. maximum) number of s-agents and adds them to a row"""
+        if self._s_start is None:
+            self._s_start = counts.get('s')
         self._data[self._nrow] = {'TRIAL': self._trial, 'CYCLE': cycle, 'NX': counts.get('x'), 'NY': counts.get('y'),
-                                  'NXY': counts.get('xy'), 'NS': counts.get('s')}
+                                  'NXY': counts.get('xy'), 'NS': counts.get('s'), 'SS': self._s_start,
+                                  'BOT_P': counts.get('bot_p')}
         self._nrow += 1
 
     def get_file(self) -> {}:

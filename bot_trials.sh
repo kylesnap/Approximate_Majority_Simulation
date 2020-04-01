@@ -59,6 +59,7 @@ parser.add_argument("model", help="interaction model used", choices=['am', 'bam'
 parser.add_argument('x', help='starting number of s-agents')
 parser.add_argument('y', help='final number of s-agents')
 parser.add_argument('n', help='increment step for s-agents between simulations')
+parser.add_argument('p', help='probability that s-agents learn')
 EOF
 
 #When run, print message before running python code.
@@ -77,12 +78,12 @@ mkdir "./output" && touch "$log_title"
 if [[ $SEED ]]; then
   for ((i = X; i <= Y; i += N)); do
     echo Running with s = $i. SEED ON.
-    ./main.py -s "$MODEL" 20 10000 500 0 0 $i >>"$log_title"
+    ./main.py -s "$MODEL" 20 10000 500 0 0 $i "$P" >>"$log_title"
   done
 else
   for ((i = X; i <= Y; i += N)); do
     echo Running with s = $i. SEED OFF.
-    ./main.py "$MODEL" 20 10000 500 0 0 $i >>"$log_title"
+    ./main.py "$MODEL" 20 10000 500 0 0 $i "$P" >>"$log_title"
   done
 fi
 
