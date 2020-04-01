@@ -56,15 +56,15 @@ class Master_Simulation():
 
 def run_to_cycle(net: network.Network, alg: str, cycles: int) -> None:
     """Runs the simulation for a set number of cycles."""
-    log.add_row(0, net.count_beliefs())  # Print starting row
-    for i in range(1, cycles + 1):
+    i = 0
+    while i <= cycles:
+        log.add_row(i, net.count_beliefs())
         if alg == 'AM':
-            net.am()
+            i += net.am()
         elif alg == 'BAM':
-            net.bam()
+            i += net.bam()
         elif alg == 'AC':
-            net.ac()
+            i += net.ac()
         else:
             raise ValueError('Algorithm not recognised.')
-        log.add_row(i, net.count_beliefs())
     log.inc_trial()
