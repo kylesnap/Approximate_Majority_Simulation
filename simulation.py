@@ -58,7 +58,7 @@ def run_to_cycle(net: network.Network, alg: str, cycles: int) -> None:
     """Runs the simulation for a set number of cycles."""
     i = 0
     while i <= cycles:
-        log.add_row(i, net.count_beliefs())
+        change = log.add_row(i, net.count_beliefs())
         if alg == 'AM':
             i += net.am()
         elif alg == 'BAM':

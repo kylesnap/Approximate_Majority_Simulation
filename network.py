@@ -73,6 +73,8 @@ class Network:
         if recip.state == init.state:
             if recip.state == 'xy':  # If both agents are compound, they'll come to both share a state at random.
                 recip.state = init.state = choice
+            else:
+                change = 0
         elif init.state == 's':
             if recip.state == 'xy':
                 recip.state = 'y'
@@ -143,7 +145,10 @@ class Network:
         if recip.state == 's' or recip.state == init.state:
             change = 0
         elif init.state == 's':  # S agents will espouse the y belief
-            recip.state = 'y'
+            if recip.state == 'x':
+                recip.state = 'y'
+            else:
+                change = 0
         else:
             recip.state = init.state
 
