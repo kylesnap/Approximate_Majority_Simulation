@@ -18,7 +18,7 @@ class SimulationLog:
 
     def add_row(self, cycle: int, counts: {}) -> bool:
         """Adds a row to the dataframe. Also gets starting (i.e. maximum) number of s-agents and adds them to a row.
-        If network is at stasis (and no learning is possible), then throws false and prints msg."""
+        If network is at stasis (and no learning is possible), then throws false."""
         if self._s_start is None:
             self._s_start = counts.get('s')
         self._data[self._nrow] = {'TRIAL': self._trial, 'CYCLE': cycle, 'NX': counts.get('x'), 'NY': counts.get('y'),
@@ -26,10 +26,8 @@ class SimulationLog:
                                   'BOT_P': counts.get('bot_p')}
         self._nrow += 1
 
-        ###IF COUNT.GET('X') == 0, OR IF COUNT.GET('Y') == 0 AND COUNT.GET('S') == 0, THEN RETURN FALSE
-        ##ELSE RETURN TRUE
-
-        if counts.get('x') == 0:
+        # If the simulation reaches a plateau, then return false (end early).
+        if (counts.get('x', 0) == 0) or (counts.get('y', 0) == 0 and counts.get('s', 0) == 0):
             return False
         else:
             return True

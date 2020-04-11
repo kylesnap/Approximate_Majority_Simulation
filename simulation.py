@@ -55,10 +55,12 @@ class Master_Simulation():
 
 
 def run_to_cycle(net: network.Network, alg: str, cycles: int) -> None:
-    """Runs the simulation for a set number of cycles."""
+    """Runs the simulation for a set number of cycles. If the simulation plateaus, end early."""
     i = 0
     while i <= cycles:
-        change = log.add_row(i, net.count_beliefs())
+        if not log.add_row(i, net.count_beliefs()):
+            print("Simulation plateaued in %d interactions" % i)
+            break
         if alg == 'AM':
             i += net.am()
         elif alg == 'BAM':
