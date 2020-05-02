@@ -27,7 +27,8 @@ class SimulationLog:
         self._nrow += 1
 
         # If the simulation reaches a plateau, then return false (end early).
-        if (counts.get('x', 0) == 0) or (counts.get('y', 0) == 0 and counts.get('s', 0) == 0):
+        if (((counts.get('x', 0) == 0) or (counts.get('y', 0) == 0 and counts.get('s', 0) == 0)) and
+            (counts.get('xy', 0) == 0)):
             return False
         else:
             return True
