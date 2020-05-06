@@ -1,5 +1,6 @@
 library(tidyverse)
 library(feather)
+library(sjstats)
 
 ####GETTING RAW FILES AND SAVING THEM AS FEATHERS####
 
@@ -42,7 +43,76 @@ max.plot +
   scale_color_discrete(name = 'Interaction\nModel Used') +
   theme_classic() + 
   theme(text = element_text(size = 12, family ='serif'))
-  
+
+####ANOVA####
+
+anova_table <- all.raw %>%
+  group_by(MODEL, NS, TRIAL) %>%
+  filter(CYCLE == max(CYCLE), BOT_P == 0) %>%
+  ungroup() %>%
+  filter(MODEL != 'AC', NS >= 50, NS <= 80) %>%
+  select(MODEL, NS, NY) %>%
+  mutate(NY = NY / 500,
+         NS = as_factor(NS))
+
+mod.compare <- lm(NY ~ MODEL * NS, data = anova_table)
+summary(mod.compare)
+anova(mod.compare)
+eta_sq(mod.compare)
+
+pairwise.t.test(anova_table$NY, anova_table$NS, p.adj= 'bonf')
+t.test(filter(anova_table, NS == 70)$NY, filter(anova_table, NS == 60)$NY)
+mean(filter(anova_table, NS == 70)$NY)
+sd(filter(anova_table, NS == 70)$NY)
+mean(filter(anova_table, NS == 60)$NY)
+sd(filter(anova_table, NS == 60)$NY)
+
+mean(filter(anova_table, MODEL =='BAM')$NY)
+sd(filter(anova_table, MODEL =='BAM')$NY)
+mean(filter(anova_table, MODEL =='AM')$NY)
+sd(filter(anova_table, MODEL =='AM')$NY)
+
+
+anova_plot <- ggplot(anova_table,
+                     aes(x = NS, y = NY, fill = MODEL))
+
+anova_plot + geom_boxplot(position = 'dodge')
+
+####SMALL N IN BOT SIMULATION###
+
+ac.small <- read_csv('../output/ac_simulations_03052020.csv') %>% mutate('model' = 'AC') %>%
+  distinct()
+
+ac_cycle <- ac.small %>%
+  group_by(NS, TRIAL) %>%
+  filter(CYCLE == max(CYCLE), BOT_P == 0) %>%
+  ungroup() %>%
+  group_by(NS) %>%
+  summarise(MEANY = mean(NY),
+            SDY = sd(NY)) %>%
+  mutate(LOWERY = lower_ci(MEANY, SDY), UPPERY = upper_ci(MEANY, SDY),
+         MODEL = 'AC') %>%
+  mutate_at(vars(contains('Y')), to_prop)
+
+ac.plot <- ggplot(ac_cycle,
+                   aes(NS, MEANY, ymin = LOWERY, ymax = UPPERY))
+
+ac.plot +
+  geom_point() +
+  geom_hline(yintercept = 0.5, linetype = 'dashed') +
+  geom_linerange() +
+  geom_line() +
+  scale_x_continuous(name = 'Number of Stubborn Bots in Network', breaks = c(seq(0, 10, 2))) +
+  scale_y_continuous(name = 'Mean y-prop at Simulation Termination') +
+  scale_color_discrete(name = 'Interaction\nModel Used') +
+  theme_classic() + 
+  theme(text = element_text(size = 12, family ='serif'))
+
+
+####EXPORT TO MAT####
+all.max <- full_join(ac_cycle, max_cycle)
+
+write_csv(all.max, './max_cycles.csv')
 
 ####PLOT MIN. CYCLES REQUIRED TO CROSS 0.5####
 min_cycle <- all.raw %>%
@@ -72,6 +142,16 @@ min.plot +
   theme_classic() + 
   theme(text = element_text(size = 12, family ='serif'))
 
+###GET MAX X####
+max_cycleX <- all.raw %>%
+  group_by(MODEL, NS, TRIAL) %>%
+  filter(CYCLE == max(CYCLE), BOT_P == 0) %>%
+  ungroup() %>%
+  group_by(MODEL, NS) %>%
+  summarise(MEANX = mean(NX),
+            SDX = sd(NX)) %>%
+  mutate(LOWERX = lower_ci(MEANX, SDX), UPPERX = upper_ci(MEANX, SDX)) %>%
+  mutate_at(vars(contains('X')), to_prop)
 
 ####FUNCTION####
 upper_ci <- function(MEAN, SD) {
